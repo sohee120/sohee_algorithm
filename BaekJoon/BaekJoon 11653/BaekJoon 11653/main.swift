@@ -4,11 +4,13 @@
 
 import Foundation
 
-let input = Int(readLine()!)!
-
-for i in 2..<input {
-    if input % i == 0 {
-        print(i)
-        
+var input = Int(String(readLine()!))!
+if input == 1 {
+    print("")
+}
+for i in stride(from: 2, through: input, by: 1) {
+    while input % i == 0 {
+        print("\(i)")
+        input = input / i
     }
 }
