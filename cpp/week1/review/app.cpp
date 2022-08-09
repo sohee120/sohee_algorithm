@@ -1,20 +1,30 @@
 #include <bits/stdc++.h>
 using namespace std;
-
-string s;
+int a, n ;
+string s1, s2, pref, suff;
 
 int main() {
 
-    getline(cin, s);
+    cin >> n;
+    cin >> s1;
 
-    for(int i=0; i<s.size(); i++) {
-        if(s[i]>=65 && s[i]<=77) s[i] += 13;
-        else if(s[i]>=78 && s[i]<=90) s[i] -= 13;
-        else if(s[i]>=97 && s[i]<=109) s[i] += 13;
-        else if(s[i]>=110 && s[i]<=122) s[i] -= 13;
+    a = s1.find("*");
+    pref = s1.substr(0, a);
+    suff = s1.substr(a+1);
+
+    for (int i=0; i<n; i++) {
+        cin >> s2;
+
+        if (pref.size()+suff.size() > s2.size()) {
+            cout << "NE\n";
+        }else{
+            if(pref == s2.substr(0, pref.size()) && suff == s2.substr(s2.size()-suff.size())) {
+                cout << "DA\n";
+            }else{
+                cout << "NE\n";
+            }
+        }
     }
-
-    cout << s;
-
 return 0;
 }
+
