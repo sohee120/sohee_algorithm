@@ -1,30 +1,30 @@
-#include <bits/stdc++.h>
+#include<bits/stdc++.h>
 using namespace std;
-int a, n ;
-string s1, s2, pref, suff;
+
+int n, idx;
+string ori_s, s, pref, suff;
 
 int main() {
-
     cin >> n;
-    cin >> s1;
+    cin >> ori_s;
 
-    a = s1.find("*");
-    pref = s1.substr(0, a);
-    suff = s1.substr(a+1);
+    idx = ori_s.find("*");
+    pref = ori_s.substr(0, idx);
+    suff = ori_s.substr(idx+1);
 
-    for (int i=0; i<n; i++) {
-        cin >> s2;
+    for(int i=0; i<n; i++) {
+        cin >> s;
 
-        if (pref.size()+suff.size() > s2.size()) {
+        if(pref.size()+suff.size() >s.size()) {
             cout << "NE\n";
         }else{
-            if(pref == s2.substr(0, pref.size()) && suff == s2.substr(s2.size()-suff.size())) {
+            if(pref == s.substr(0, pref.size()) && suff == s.substr(s.size()-suff.size())) {
                 cout << "DA\n";
             }else{
                 cout << "NE\n";
             }
         }
     }
-return 0;
-}
 
+    return 0;
+}
