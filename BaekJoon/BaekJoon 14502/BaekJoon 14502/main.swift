@@ -46,9 +46,9 @@ func bfs(_ lab: [[Int]]) {
     }
     
     while !queue.isEmpty {
-        var dequeu = queue.removeFirst()
-        var y = dequeu.0
-        var x = dequeu.1
+        let dequeu = queue.removeFirst()
+        let y = dequeu.0
+        let x = dequeu.1
         visited[y][x] = true
         
         for i in 0..<4 {
