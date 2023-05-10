@@ -9,52 +9,43 @@ import Foundation
 
 var testNum = Int(readLine()!)!
 
-
-let dx = [0, 1, 0, -1]
-let dy = [1, 0, -1, 0]
-
 while testNum > 0 {
-
-    let input = readLine()!.split(separator: " ").map{Int(String($0))!}
-    let m = input[0]
-    let n = input[1]
-    let k = input[2]
     
-    var map = Array(repeating: Array(repeating: 0, count: m), count: n)
-    var cnt: Int = 0
+    let input = readLine()!.split(separator: " ").map{Int(String($0))!}
+    let m = input[0] //10
+    let n = input[1] //8
+    let k = input[2]
+    var field = Array(repeating: Array(repeating: 0, count: m), count: n)
+    let dy = [1, 0, -1, 0]
+    let dx = [0, 1, 0, -1]
     var cntList = [Int]()
+    var cnt = 0
     
     for _ in 0..<k {
-        let coor = readLine()!.split(separator: " ").map{Int(String($0))!}
-        let j = coor[0]
-        let i = coor[1]
-        map[i][j] = 1
+        let coordinate = readLine()!.split(separator: " ").map{Int(String($0))!}
+        field[coordinate[1]][coordinate[0]] = 1
     }
     
-    func bfs(_ i: Int, _ j: Int) -> Int {
-        var queue = Array<(Int,Int)>()
+    func bfs(_ i:Int, _ j:Int) -> Int {
+        var queue = [(Int,Int)]()
         queue.append((i,j))
-        map[i][j] = 0
-        cnt = 1
+        cnt += 1
         
         while !queue.isEmpty {
-            let poped = queue.removeFirst()
-            let y = poped.0
-            let x = poped.1
+            let dequeue = queue.removeFirst()
+            let y = dequeue.0
+            let x = dequeue.1
             
-            for k in 0..<4 {
-                let ny = y + dy[k]
-                let nx = x + dx[k]
+            for i in 0..<4 {
+                let ny = y + dy[i]
+                let nx = x + dx[i]
                 
-                if nx < 0 || nx >= m || ny < 0 || ny >= n {
+                if ny < 0 || ny >= n || nx < 0 || nx >= m || field[ny][nx] == 0 {
                     continue
                 }
-                
-                if map[ny][nx] == 1 {
-                    queue.append((ny,nx))
-                    map[ny][nx] = 0
-                    cnt += 1
-                }
+                queue.append((ny,nx))
+                cnt += 1
+                field[ny][nx] = 0
             }
         }
         return cnt
@@ -62,14 +53,13 @@ while testNum > 0 {
     
     for i in 0..<n {
         for j in 0..<m {
-            if map[i][j] == 1{
-                cntList.append(bfs(i,j))
+            if field[i][j] == 1 {
+                cntList.append(bfs(i, j))
             }
         }
     }
     
     print(cntList.count)
-    
     testNum -= 1
+    
 }
-        
