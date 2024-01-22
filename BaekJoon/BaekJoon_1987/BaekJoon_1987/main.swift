@@ -11,7 +11,6 @@ let input = readLine()!.split(separator: " ").map{Int(String($0))!}
 let r = input[0]
 let c = input[1]
 var board = [[Int]]()
-var visited = Array(repeating: Array(repeating: 0, count: c), count: r)
 var answer = 0
 
 let dy = [1, 0, -1, 0]
