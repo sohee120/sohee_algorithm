@@ -13,6 +13,9 @@ var graph = [[Int]]()
 var shark = (-1,-1,-1)
 var eatCnt = 0
 
+let dy = [1, 0, -1, 0]
+let dx = [0, 1, 0, -1]
+
 for i in 0..<n {
     let input = readLine()!.split(separator: " ").map{Int(String($0))!}
     graph.append(input)
@@ -26,13 +29,10 @@ for i in 0..<n {
 var time = 0
 
 func bfs() -> Bool {
+    var visit = Array(repeating: Array(repeating: false, count: n), count: n)
     var queue = [(shark.0, shark.1, 0)]
     var idx = 0
     
-    let dy = [1, 0, -1, 0]
-    let dx = [0, 1, 0, -1]
-     
-    var visit = Array(repeating: Array(repeating: false, count: n), count: n)
     visit[shark.0][shark.1] = true
     
     var dist = Int.max
@@ -44,17 +44,20 @@ func bfs() -> Bool {
         
         if cnt > dist {continue}
         
-        if (1..<shark.2).contains(graph[y][x]) {
+        if graph[y][x] > 0 && graph[y][x] < shark.2 {
             dist = cnt
             fishList.append((y,x))
         }
         
         for i in 0..<4 {
-            let (ny,nx) = (y+dy[i], x+dx[i])
-            if (0..<n).contains(ny) && (0..<n).contains(nx) && !visit[ny][nx] && graph[ny][nx] <= shark.2 {
-                visit[ny][nx] = true
-                queue.append((ny,nx,cnt+1))
+            let ny = y + dy[i]
+            let nx = x + dx[i]
+            
+            if nx < 0 || ny < 0 || nx >= n || ny >= n || visit[ny][nx] || graph[ny][nx] > shark.2 {
+                continue
             }
+            visit[ny][nx] = true
+            queue.append((ny,nx,cnt+1))
         }
     }
     
