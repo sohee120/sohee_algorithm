@@ -1,6 +1,6 @@
 //
 //  main.swift
-//  BaekJoon_1238
+//  BaekJoon_1931
 //
 //  Created by 윤소희 on 2024/02/14.
 //
