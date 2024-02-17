@@ -60,3 +60,4 @@ for edge in edges {
 }
 
 print(answer)
+print(parent)
