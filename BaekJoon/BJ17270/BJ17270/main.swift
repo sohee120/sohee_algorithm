@@ -185,3 +185,4 @@ candidate.sort{sum[$0] < sum[$1] || $0 < $1}
 print(candidate.isEmpty ? -1 : candidate[0])
 
 
+
