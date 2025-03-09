@@ -1,8 +1,8 @@
 //
 //  main.swift
-//  BJ2665
+//  BJ14284
 //
-//  Created by 윤소희 on 2/19/25.
+//  Created by 윤소희 on 3/6/25.
 //
 
 import Foundation
@@ -55,7 +55,7 @@ struct Heap<T> {
     }
     
     mutating func pop() -> T? {
-        guard !nodes.isEmpty else { return nil }
+        guard !nodes.isEmpty else {return nil}
         nodes.swapAt(0, count - 1)
         defer {
             shiftDown(from: 0)
@@ -89,53 +89,47 @@ struct Heap<T> {
 }
 
 struct Data: Comparable {
-    static func < (lhs:Data, rhs:Data) -> Bool {
+    static func < (lhs: Data, rhs: Data) -> Bool {
         return lhs.cost < rhs.cost
     }
-    var x: Int
-    var y: Int
+    var node: Int
     var cost: Int
 }
 
-let n = Int(readLine()!)!
-var grid = [[Int]](repeating: [Int](), count: n)
-for i in 0..<n {
-    grid[i] = readLine()!.compactMap { Int(String($0)) }
-}
-var ans = 0
-let dx = [1, 0, -1, 0]
-let dy = [0, 1, 0, -1]
-var distance = Array(repeating: Array(repeating: Int.max, count: n), count: n)
+let input = readLine()!.split(separator: " ").map{Int(String($0))!}
+let n = input[0], m = input[1]
+let INF = Int.max
+var graph = [[Data]](repeating: [], count: n+1)
+var distance = [Int](repeating: INF, count: n+1)
 
-func dijkstra() {
+for _ in 0..<m {
+    let temp = readLine()!.split(separator: " ").map{Int(String($0))!}
+    graph[temp[0]].append(Data(node: temp[1], cost: temp[2]))
+    graph[temp[1]].append(Data(node: temp[0], cost: temp[2]))
+}
+
+let st = readLine()!.split(separator: " ").map{Int(String($0))!}
+let s = st[0], t = st[1]
+
+func dijkstra(start: Int) {
     var heap = Heap<Data>(sort: {$0.cost < $1.cost})
-    distance[0][0] = 0
-    
-    heap.push(Data(x: 0, y: 0, cost: 0))
+    distance[start] = 0
+    heap.push(Data(node: start, cost: 0))
     
     while !heap.isEmpty {
         let now = heap.pop()!
-        let x = now.x, y = now.y, cost = now.cost
         
-        if cost > distance[x][y] { continue }
+        if now.cost > distance[now.node] { continue }
         
-        if x == n - 1 && y == n - 1 {
-            print(cost)
-            return
-        }
-        
-        for i in 0..<4 {
-            let nx = x + dx[i]
-            let ny = y + dy[i]
-            if nx < 0 || nx >= n || ny < 0 || ny >= n {continue}
-            let newCost = cost + (grid[nx][ny] == 0 ? 1 : 0)
-            if newCost < distance[nx][ny] {
-                distance[nx][ny] = newCost
-                heap.push(Data(x: nx, y: ny, cost: newCost))
+        for next in graph[now.node] {
+            let newCost = now.cost + next.cost
+            if newCost < distance[next.node] {
+                distance[next.node] = newCost
+                heap.push(Data(node: next.node, cost: newCost))
             }
         }
     }
-    print(distance[n - 1][n - 1])
 }
 
-dijkstra()
+dijkstra(start: s)
+print(distance[t])

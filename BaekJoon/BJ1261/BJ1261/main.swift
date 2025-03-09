@@ -1,8 +1,8 @@
 //
 //  main.swift
-//  BJ2665
+//  BJ1261
 //
-//  Created by 윤소희 on 2/19/25.
+//  Created by 윤소희 on 3/9/25.
 //
 
 import Foundation
@@ -39,11 +39,6 @@ struct Heap<T> {
         return (index - 1)/2
     }
     
-    mutating func push(_ element: T) {
-        nodes.append(element)
-        shiftUp(from: count - 1)
-    }
-    
     mutating func shiftUp(from index: Int) {
         var child = index
         var parent = parentIndex(ofChild: child)
@@ -54,13 +49,9 @@ struct Heap<T> {
         }
     }
     
-    mutating func pop() -> T? {
-        guard !nodes.isEmpty else { return nil }
-        nodes.swapAt(0, count - 1)
-        defer {
-            shiftDown(from: 0)
-        }
-        return nodes.removeLast()
+    mutating func push(_ element: T) {
+        nodes.append(element)
+        shiftUp(from: count - 1)
     }
     
     mutating func shiftDown(from index: Int) {
@@ -86,56 +77,63 @@ struct Heap<T> {
             parent = candidate
         }
     }
+    
+    mutating func pop() -> T? {
+        guard !nodes.isEmpty else { return nil }
+        nodes.swapAt(0, count - 1)
+        defer {
+            shiftDown(from: 0)
+        }
+        return nodes.removeLast()
+    }
 }
 
 struct Data: Comparable {
-    static func < (lhs:Data, rhs:Data) -> Bool {
+    static func < (lhs:Data, rhs: Data) -> Bool {
         return lhs.cost < rhs.cost
     }
-    var x: Int
-    var y: Int
-    var cost: Int
+    
+    let x: Int
+    let y: Int
+    let cost: Int
 }
 
-let n = Int(readLine()!)!
-var grid = [[Int]](repeating: [Int](), count: n)
-for i in 0..<n {
-    grid[i] = readLine()!.compactMap { Int(String($0)) }
-}
-var ans = 0
+let input = readLine()!.split(separator: " ").map{Int(String($0))!}
+let m = input[0], n = input[1]
+var graph = Array(repeating: Array(repeating: 0, count: m), count: n)
+let INF = Int.max
+var distance = Array(repeating: Array(repeating: INF, count: m), count: n)
+
 let dx = [1, 0, -1, 0]
 let dy = [0, 1, 0, -1]
-var distance = Array(repeating: Array(repeating: Int.max, count: n), count: n)
 
-func dijkstra() {
+for i in 0..<n {
+    graph[i] = readLine()!.map{Int(String($0))!}
+}
+
+func dijkstra(start: (Int, Int)) {
     var heap = Heap<Data>(sort: {$0.cost < $1.cost})
-    distance[0][0] = 0
-    
-    heap.push(Data(x: 0, y: 0, cost: 0))
+    heap.push(Data(x: start.1, y: start.0, cost: 0))
+    distance[start.0][start.1] = 0
     
     while !heap.isEmpty {
         let now = heap.pop()!
         let x = now.x, y = now.y, cost = now.cost
         
-        if cost > distance[x][y] { continue }
-        
-        if x == n - 1 && y == n - 1 {
-            print(cost)
-            return
-        }
+        if distance[y][x] < cost { continue }
         
         for i in 0..<4 {
-            let nx = x + dx[i]
             let ny = y + dy[i]
-            if nx < 0 || nx >= n || ny < 0 || ny >= n {continue}
-            let newCost = cost + (grid[nx][ny] == 0 ? 1 : 0)
-            if newCost < distance[nx][ny] {
-                distance[nx][ny] = newCost
-                heap.push(Data(x: nx, y: ny, cost: newCost))
+            let nx = x + dx[i]
+            
+            if nx < 0 || nx >= m || ny < 0 || ny >= n { continue }
+            if distance[ny][nx] > cost + graph[ny][nx] {
+                heap.push(Data(x: nx, y: ny, cost: cost + graph[ny][nx]))
+                distance[ny][nx] = cost + graph[ny][nx]
             }
         }
     }
-    print(distance[n - 1][n - 1])
 }
 
-dijkstra()
+dijkstra(start: (0,0))
+print(distance[n-1][m-1])
